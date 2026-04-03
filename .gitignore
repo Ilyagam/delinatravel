@@ -49,3 +49,4 @@ next-env.d.ts
 # temp files
 96c944f6-*
 ac10309e-*
+.mcp.json

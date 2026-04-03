@@ -69,6 +69,15 @@ create policy "allow_select_active_tours"
   to anon, authenticated
   using (is_active = true);
 
--- ПРИМЕЧАНИЕ: SELECT/INSERT/UPDATE/DELETE для page_views, applications, tours
--- в admin-панели идёт через service_role ключ (SUPABASE_SERVICE_ROLE_KEY),
+-- 5. Сессии Telegram-бота (состояние пошаговых диалогов)
+create table if not exists bot_sessions (
+  chat_id bigint primary key,
+  action text,
+  step text,
+  data jsonb default '{}',
+  updated_at timestamptz default now()
+);
+
+-- ПРИМЕЧАНИЕ: SELECT/INSERT/UPDATE/DELETE для page_views, applications, tours, bot_sessions
+-- в admin-панели и боте идёт через service_role ключ (SUPABASE_SERVICE_ROLE_KEY),
 -- который обходит RLS — дополнительных политик для admin не нужно.

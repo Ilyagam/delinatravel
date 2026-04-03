@@ -29,6 +29,7 @@ export interface Application {
   tour_id: string | null;
   tour_title: string | null;
   message: string | null;
+  status: "new" | "contacted" | "paid" | "done" | null;
   created_at: string;
 }
 
