@@ -2,7 +2,7 @@
 // Скачивает фото → загружает в Supabase Storage → обновляет tours.image_urls
 
 import { sendMessage, MAIN_MENU, TelegramPhoto } from "./telegram-bot";
-import { getSession, setSession, clearSession, BotSession } from "./bot-state";
+import { getSession, clearSession, BotSession } from "./bot-state";
 import { getLargestPhotoFileId, downloadAndUploadPhoto, addPhotoToTour } from "./bot-photo";
 import { createServiceClient } from "./supabase";
 import { escapeHtml } from "./bot-tour-flow";
@@ -64,44 +64,20 @@ async function uploadPhotoToExistingTour(
     );
   } catch (error) {
     console.error("Photo upload error:", error);
-    await sendMessage(chatId, "❌ Ошибка загрузки фото. Попробуй ещё раз.");
+    await sendMessage(chatId, "❌ Ошибка загрузки фото. Попробуй ещё раз или нажми /done");
   }
 }
 
-// REASON: Когда в add flow пользователь нажал /skip на шаге фото — показать confirm
+// REASON: Тур уже создан в БД на предыдущем шаге — просто закрываем сессию фото
 export async function handlePhotoSkipInAddFlow(
   chatId: number,
   session: BotSession
 ): Promise<void> {
-  // Данные тура лежат в session.data (кроме tour_id и _updated_at)
-  const data = session.data;
-
-  const included = Array.isArray(data.what_included)
-    ? (data.what_included as string[]).map((s) => `  • ${escapeHtml(s)}`).join("\n")
-    : "";
-
-  const summary = [
-    "🔍 <b>Проверь данные тура:</b>",
-    "",
-    `📝 <b>${escapeHtml(String(data.title))}</b>`,
-    `📍 ${escapeHtml(String(data.destination))}`,
-    `📅 ${escapeHtml(String(data.dates))}`,
-    `💰 от ${Number(data.price_from).toLocaleString("ru")} ₸`,
-    `📄 ${escapeHtml(String(data.short_description))}`,
-    "",
-    "✅ Включено:",
-    included,
-  ].join("\n");
-
-  // REASON: Восстанавливаем сессию add_tour для confirm callback
-  await setSession(chatId, "add_tour", "confirm", data);
-
-  await sendMessage(chatId, summary, {
-    inline_keyboard: [
-      [
-        { text: "✅ Сохранить", callback_data: "confirm_add" },
-        { text: "❌ Отмена", callback_data: "cancel_action" },
-      ],
-    ],
-  });
+  await clearSession(chatId);
+  const title = session.data.title ? escapeHtml(String(session.data.title)) : "Тур";
+  await sendMessage(
+    chatId,
+    `✅ <b>${title}</b> создан и уже на сайте!\n\nФото можно добавить позже: 📋 Мои туры → ✏️ → 📸`,
+    { reply_keyboard: MAIN_MENU }
+  );
 }

@@ -53,13 +53,19 @@ export async function handleUpdate(update: TelegramUpdate): Promise<void> {
 
     // REASON: /done завершает загрузку фото и /skip пропускает шаг фото в add flow
     if ((text === "/done" || text === "/skip") && (session.action === "upload_photo" || session.action === "add_tour_photo")) {
-      await clearSession(chatId);
       if (session.action === "add_tour_photo") {
-        // Вернуться к confirm в add flow
+        // REASON: НЕ очищаем сессию до вызова — handlePhotoSkipInAddFlow читает session.data
         const { handlePhotoSkipInAddFlow } = await import("./bot-photo-handler");
         return handlePhotoSkipInAddFlow(chatId, session);
       }
+      await clearSession(chatId);
       await sendMessage(chatId, "✅ Фото загружены!", { reply_keyboard: MAIN_MENU });
+      return;
+    }
+
+    // REASON: Если Деля отправила текст во время ожидания фото — подсказать
+    if (session.action === "upload_photo" || session.action === "add_tour_photo") {
+      await sendMessage(chatId, "📸 Отправь фото или нажми /done\nОтменить — /cancel");
       return;
     }
 
@@ -211,6 +217,15 @@ function getStatusEmoji(status: string | null): string {
 // ============ /stats ============
 
 async function handleStats(chatId: number): Promise<void> {
+  try {
+    return await handleStatsInner(chatId);
+  } catch (error) {
+    console.error("Stats error:", error);
+    await sendMessage(chatId, "❌ Ошибка загрузки статистики", { reply_keyboard: MAIN_MENU });
+  }
+}
+
+async function handleStatsInner(chatId: number): Promise<void> {
   const stats = await getAnalyticsStats();
 
   if (!stats) {
@@ -351,8 +366,12 @@ async function handleCallback(query: CallbackQuery): Promise<void> {
 
     case "ef": {
       // REASON: ef = edit field — начать редактирование одного поля тура
-      const { setSession } = await import("./bot-state");
       const field = rest[0];
+      if (!field) {
+        await answerCallbackQuery(query.id, "❌ Ошибка");
+        break;
+      }
+      const { setSession } = await import("./bot-state");
       const fieldNames: Record<string, string> = {
         title: "название", destination: "направление", dates: "даты",
         price_from: "цену (только число в тенге)", short_description: "краткое описание",
@@ -375,11 +394,19 @@ async function handleCallback(query: CallbackQuery): Promise<void> {
 
     case "app_status": {
       // REASON: Обновить статус заявки прямо из Telegram
-      const newStatus = rest[0]; // contacted | done
+      const newStatus = rest[0];
+      if (!newStatus) {
+        await answerCallbackQuery(query.id, "❌ Ошибка");
+        break;
+      }
       const statusLabels: Record<string, string> = {
         contacted: "📝 В работе", done: "✅ Закрыта",
       };
-      await supabase.from("applications").update({ status: newStatus }).eq("id", id);
+      const { error: statusError } = await supabase.from("applications").update({ status: newStatus }).eq("id", id);
+      if (statusError) {
+        await answerCallbackQuery(query.id, "❌ Ошибка обновления");
+        break;
+      }
       await answerCallbackQuery(query.id, statusLabels[newStatus] || newStatus);
       if (messageId) {
         await editMessageText(chatId, messageId,

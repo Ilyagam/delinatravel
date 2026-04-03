@@ -88,15 +88,15 @@ export async function handleAddStep(
     title: data.title,
     destination: data.destination,
     dates: data.dates,
-    price_from: Number(data.price_from) || null,
+    price_from: data.price_from != null ? Number(data.price_from) : null,
     short_description: data.short_description,
     what_included: data.what_included,
     is_active: true,
   }).select("id").single();
 
-  if (error) {
+  if (error || !inserted) {
     await clearSession(chatId);
-    await sendMessage(chatId, `❌ Ошибка: ${error.message}`, { reply_keyboard: MAIN_MENU });
+    await sendMessage(chatId, `❌ Ошибка: ${error?.message || "не удалось создать тур"}`, { reply_keyboard: MAIN_MENU });
     return;
   }
 
