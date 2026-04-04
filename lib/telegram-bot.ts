@@ -128,8 +128,9 @@ export async function editMessageText(
   });
 }
 
-// REASON: Only Delya (TELEGRAM_CHAT_ID) can use admin commands
+// REASON: Only Delya and dev accounts can use admin commands
+// TELEGRAM_CHAT_ID может содержать несколько ID через запятую
 export function isAdmin(chatId: number): boolean {
-  const adminId = process.env.TELEGRAM_CHAT_ID || "5135760040";
-  return String(chatId) === adminId;
+  const adminIds = (process.env.TELEGRAM_CHAT_ID || "5135760040").split(",");
+  return adminIds.includes(String(chatId));
 }
