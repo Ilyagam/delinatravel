@@ -14,15 +14,14 @@ export async function handlePhotoMessage(
 ): Promise<void> {
   const session = await getSession(chatId);
 
-  // Режим загрузки фото к существующему туру
-  if (session.action === "upload_photo") {
-    const tourId = session.data.tour_id as string;
-    return uploadPhotoToExistingTour(chatId, photos, tourId);
-  }
-
-  // Режим загрузки фото в flow добавления нового тура
-  if (session.action === "add_tour_photo") {
-    const tourId = session.data.tour_id as string;
+  // Режим загрузки фото к существующему или новому туру
+  if (session.action === "upload_photo" || session.action === "add_tour_photo") {
+    const tourId = session.data.tour_id as string | undefined;
+    if (!tourId) {
+      await clearSession(chatId);
+      await sendMessage(chatId, "❌ Сессия потеряна. Попробуй заново через ✏️ → 📸", { reply_keyboard: MAIN_MENU });
+      return;
+    }
     return uploadPhotoToExistingTour(chatId, photos, tourId);
   }
 

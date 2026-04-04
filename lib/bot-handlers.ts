@@ -42,6 +42,7 @@ export async function handleUpdate(update: TelegramUpdate): Promise<void> {
     const text = message.text.trim();
 
     if (text === "/start") return handleStart(chatId);
+    if (text === "/help") return handleHelp(chatId);
     if (text === "📋 Мои туры" || text === "/tours") return handleTours(chatId);
     if (text === "➕ Добавить тур" || text === "/add") return handleAddStart(chatId);
     if (text === "📩 Заявки" || text === "/apps") return handleApps(chatId, "new");
@@ -81,9 +82,43 @@ export async function handleUpdate(update: TelegramUpdate): Promise<void> {
 async function handleStart(chatId: number): Promise<void> {
   await sendMessage(
     chatId,
-    "👋 Привет! Я — админка <b>Delina Travel</b>.\n\nВыбери действие внизу 👇",
+    "👋 Привет! Я — админка <b>Delina Travel</b>.\n\nВыбери действие внизу 👇\nПодробнее — /help",
     { reply_keyboard: MAIN_MENU }
   );
+}
+
+// ============ /help ============
+
+async function handleHelp(chatId: number): Promise<void> {
+  const text = [
+    "📖 <b>Инструкция по боту</b>",
+    "",
+    "<b>📋 Мои туры</b> — список всех туров",
+    "  ✏️ Редактировать — изменить любое поле",
+    "  📸 Добавить фото — отправь фото в чат",
+    "  🔴/🟢 Скрыть/Показать — вкл/выкл на сайте",
+    "  📋 Дублировать — копия тура (для новых дат)",
+    "  🗑 Удалить — с подтверждением",
+    "",
+    "<b>➕ Добавить тур</b> — пошагово:",
+    "  Название → Направление → Даты → Цена →",
+    "  Описание → Что включено → Фото",
+    "",
+    "<b>📩 Заявки</b> — заявки с сайта",
+    "  📞 Позвонить / 💬 WhatsApp — одним нажатием",
+    "  📝 В работе / ✅ Закрыта — статус заявки",
+    "",
+    "<b>📊 Статистика</b> — посещаемость, заявки, конверсия",
+    "",
+    "<b>Команды:</b>",
+    "  /cancel — отменить текущее действие",
+    "  /done — завершить загрузку фото",
+    "  /skip — пропустить фото при добавлении тура",
+    "",
+    "☀️ Каждое утро в 9:00 — автоматическая сводка",
+  ].join("\n");
+
+  await sendMessage(chatId, text, { reply_keyboard: MAIN_MENU });
 }
 
 // ============ /tours ============
@@ -283,10 +318,15 @@ async function handleCancel(chatId: number): Promise<void> {
 async function handleCallback(query: CallbackQuery): Promise<void> {
   const chatId = query.message?.chat.id;
   const messageId = query.message?.message_id;
-  const data = query.data as string;
+  const data = query.data;
 
   if (!chatId || !isAdmin(chatId)) {
     await answerCallbackQuery(query.id, "⛔ Нет доступа");
+    return;
+  }
+
+  if (!data) {
+    await answerCallbackQuery(query.id);
     return;
   }
 

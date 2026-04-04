@@ -80,7 +80,6 @@ export async function handleAddStep(
 
   // All text steps done — save tour to DB immediately, then offer photo upload
   const slug = generateSlug(data.title as string);
-  const { createServiceClient } = await import("./supabase");
   const supabase = createServiceClient();
 
   const { data: inserted, error } = await supabase.from("tours").insert({

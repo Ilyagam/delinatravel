@@ -39,6 +39,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     body: JSON.stringify({
       commands: [
         { command: "start", description: "Главное меню" },
+        { command: "help", description: "Инструкция по боту" },
         { command: "tours", description: "Мои туры" },
         { command: "add", description: "Добавить тур" },
         { command: "apps", description: "Заявки" },
