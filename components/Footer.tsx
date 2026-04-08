@@ -13,6 +13,11 @@ export default function Footer() {
             <p className="text-[#F0F7FA]/50 text-sm max-w-xs">
               Авторские групповые путешествия по Азии
             </p>
+            <div className="text-[#F0F7FA]/30 text-xs mt-3 space-y-0.5">
+              <p>ИП Delina Travel | БИН 791128450113</p>
+              <p>г. Астана, ул. Асфендиярова, дом 5</p>
+              <p>Реестр турагентов: Z1201355</p>
+            </div>
           </div>
 
           <div className="flex flex-col gap-3">

@@ -99,7 +99,8 @@ const travelAgencySchema = {
   address: {
     "@type": "PostalAddress",
     addressCountry: "KZ",
-    addressLocality: "Алматы",
+    addressLocality: "Астана",
+    streetAddress: "ул. Асфендиярова, дом 5",
   },
   areaServed: {
     "@type": "Country",
