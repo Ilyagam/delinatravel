@@ -394,7 +394,10 @@ async function handleCallback(query: CallbackQuery): Promise<void> {
         [{ text: "💰 Цена", callback_data: `ef:${id}:price_from` }],
         [{ text: "📄 Описание", callback_data: `ef:${id}:short_description` }],
         [{ text: "✅ Что включено", callback_data: `ef:${id}:what_included` }],
-        [{ text: "📸 Добавить фото", callback_data: `add_photo:${id}` }],
+        [
+          { text: "📸 Добавить фото", callback_data: `add_photo:${id}` },
+          { text: "🗑 Удалить фото", callback_data: `del_photos:${id}` },
+        ],
         [{ text: "🔙 Назад", callback_data: "cancel_action" }],
       ];
       if (messageId) {
@@ -420,6 +423,50 @@ async function handleCallback(query: CallbackQuery): Promise<void> {
       await setSession(chatId, "edit_tour", field, { tour_id: id });
       await sendMessage(chatId, `✏️ Введи новое <b>${fieldNames[field] || field}</b>:\n\n/cancel — отмена`);
       await answerCallbackQuery(query.id);
+      break;
+    }
+
+    case "del_photos": {
+      // REASON: Показать список фото тура с кнопками удаления
+      const { data: tourPhotos } = await supabase
+        .from("tours").select("title, image_urls").eq("id", id).single();
+      if (!tourPhotos || !tourPhotos.image_urls || tourPhotos.image_urls.length === 0) {
+        await answerCallbackQuery(query.id, "Нет фото для удаления");
+        break;
+      }
+      const photoButtons: InlineKeyboard = tourPhotos.image_urls.map((_: string, i: number) => ([
+        { text: `🗑 Фото ${i + 1}`, callback_data: `rm_photo:${id}:${i}` },
+      ]));
+      photoButtons.push([{ text: "🔙 Назад", callback_data: `edit:${id}` }]);
+      await sendMessage(
+        chatId,
+        `📸 <b>${escapeHtml(tourPhotos.title)}</b> — ${tourPhotos.image_urls.length} фото.\n\nВыбери какое удалить:`,
+        { inline_keyboard: photoButtons }
+      );
+      await answerCallbackQuery(query.id);
+      break;
+    }
+
+    case "rm_photo": {
+      // REASON: Удалить конкретное фото из массива image_urls
+      const photoIndex = parseInt(rest[0], 10);
+      if (isNaN(photoIndex)) {
+        await answerCallbackQuery(query.id, "❌ Ошибка");
+        break;
+      }
+      const { data: tourForRm } = await supabase
+        .from("tours").select("image_urls").eq("id", id).single();
+      if (!tourForRm?.image_urls) {
+        await answerCallbackQuery(query.id, "❌ Фото не найдены");
+        break;
+      }
+      const updatedUrls = tourForRm.image_urls.filter((_: string, i: number) => i !== photoIndex);
+      await supabase.from("tours").update({ image_urls: updatedUrls }).eq("id", id);
+      await answerCallbackQuery(query.id, `🗑 Фото ${photoIndex + 1} удалено`);
+      if (messageId) {
+        await editMessageText(chatId, messageId,
+          `✅ Фото ${photoIndex + 1} удалено. Осталось: ${updatedUrls.length}`);
+      }
       break;
     }
 
