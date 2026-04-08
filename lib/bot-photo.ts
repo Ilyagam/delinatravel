@@ -70,8 +70,8 @@ export async function addPhotoToTour(
     .eq("id", tourId)
     .single();
 
-  const currentUrls: string[] = tour?.image_urls || [];
-  currentUrls.push(photoUrl);
+  const currentUrls: string[] = (tour?.image_urls || []).map((u: string) => u.trim());
+  currentUrls.push(photoUrl.trim());
 
   await supabase
     .from("tours")
