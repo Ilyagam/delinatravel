@@ -1,12 +1,12 @@
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProgramAccordion from "@/components/ProgramAccordion";
 import ApplicationForm from "@/components/ApplicationForm";
 import JsonLd from "@/components/JsonLd";
+import PhotoLightbox from "@/components/PhotoLightbox";
 import { getTourBySlug, getActiveTours } from "@/lib/tours";
 
 const BASE_URL = "https://delinatravel.kz";
@@ -100,75 +100,42 @@ export default async function TourPage({
       <Navbar />
       <JsonLd data={tourSchema} />
       <main>
-        {/* Hero */}
-        <section className="relative min-h-[60vh] flex items-end pt-24 pb-12 px-6 md:px-10 overflow-hidden">
-          <div
-            className="absolute inset-0 z-0"
-            style={{
-              background:
-                "linear-gradient(160deg, #1A97B5 0%, #134E6F 100%)",
-            }}
-          />
-          {tour.image_urls && tour.image_urls[0] && (
-            <Image
-              src={tour.image_urls[0]}
-              alt={tour.title}
-              fill
-              priority
-              sizes="100vw"
-              className="object-cover z-0 opacity-60"
-            />
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#134E6F] via-[#134E6F]/40 to-transparent z-[1]" />
-
-          <div className="relative z-10 max-w-4xl mx-auto w-full">
-            <Link
-              href="/#tours"
-              className="text-[#F0F7FA]/60 text-sm mb-6 block hover:text-[#F0F7FA] transition-colors"
-            >
-              ← Все туры
-            </Link>
-            <span className="text-[#38BDF8] text-sm tracking-widest uppercase mb-3 block">
-              {tour.destination}
-            </span>
-            <h1
-              className="text-5xl md:text-6xl font-light text-[#F0F7FA] mb-4 leading-tight"
-              style={{ fontFamily: "var(--font-cormorant)" }}
-            >
-              {tour.title}
-            </h1>
-            <div className="flex flex-wrap gap-4 text-[#F0F7FA]/70 text-sm">
-              <span>📅 {tour.dates}</span>
-              {tour.price_from && (
-                <span>
-                  💰 от {tour.price_from.toLocaleString("ru-RU")} ₸
-                </span>
-              )}
+        {/* Hero with title overlay */}
+        <section className="relative">
+          {/* Title bar */}
+          <div className="bg-[#134E6F] pt-24 pb-8 px-6 md:px-10">
+            <div className="max-w-4xl mx-auto">
+              <Link
+                href="/#tours"
+                className="text-[#F0F7FA]/60 text-sm mb-6 block hover:text-[#F0F7FA] transition-colors"
+              >
+                ← Все туры
+              </Link>
+              <span className="text-[#38BDF8] text-sm tracking-widest uppercase mb-3 block">
+                {tour.destination}
+              </span>
+              <h1
+                className="text-5xl md:text-6xl font-light text-[#F0F7FA] mb-4 leading-tight"
+                style={{ fontFamily: "var(--font-cormorant)" }}
+              >
+                {tour.title}
+              </h1>
+              <div className="flex flex-wrap gap-4 text-[#F0F7FA]/70 text-sm">
+                <span>📅 {tour.dates}</span>
+                {tour.price_from && (
+                  <span>
+                    💰 от {tour.price_from.toLocaleString("ru-RU")} ₸
+                  </span>
+                )}
+              </div>
             </div>
           </div>
-        </section>
 
-        {/* Photo gallery */}
-        {tour.image_urls && tour.image_urls.length > 1 && (
-          <section className="px-6 md:px-10 py-6 bg-[#F0F7FA]">
-            <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-3">
-              {tour.image_urls.slice(1).map((url, i) => (
-                <div
-                  key={i}
-                  className="relative aspect-[4/3] rounded-xl overflow-hidden bg-[#1A97B5]"
-                >
-                  <Image
-                    src={url}
-                    alt={`${tour.title} — фото ${i + 2}`}
-                    fill
-                    className="object-cover hover:scale-105 transition-transform duration-500"
-                    sizes="(max-width: 768px) 50vw, 33vw"
-                  />
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
+          {/* Full-width hero photo + mosaic gallery + lightbox */}
+          {tour.image_urls && tour.image_urls.length > 0 && (
+            <PhotoLightbox images={tour.image_urls} tourTitle={tour.title} />
+          )}
+        </section>
 
         {/* Content */}
         <section className="py-16 md:py-24 px-6 md:px-10">
@@ -214,7 +181,7 @@ export default async function TourPage({
                     <ul className="space-y-2">
                       {tour.what_excluded.map((item, i) => (
                         <li key={i} className="flex items-start gap-2 text-sm text-[#64929E]">
-                          <span className="text-[#F0A868] mt-0.5">—</span>
+                          <span className="text-[#64929E]/40 mt-0.5 text-xs">✕</span>
                           {item}
                         </li>
                       ))}
