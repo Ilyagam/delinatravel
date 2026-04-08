@@ -21,6 +21,7 @@ export default function ApplicationForm({
     tour_title: preselectedTourTitle || "",
     message: "",
   });
+  const [agreed, setAgreed] = useState(false);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -123,6 +124,22 @@ export default function ApplicationForm({
         </div>
       )}
 
+      <label className="flex items-start gap-2 cursor-pointer mt-2">
+        <input
+          type="checkbox"
+          checked={agreed}
+          onChange={(e) => setAgreed(e.target.checked)}
+          className="mt-1 accent-[#134E6F]"
+          required
+        />
+        <span className="text-xs text-[#64929E] leading-relaxed">
+          Я согласен(а) на{" "}
+          <a href="/privacy" className="underline hover:text-[#134E6F]">
+            обработку персональных данных
+          </a>
+        </span>
+      </label>
+
       {status === "error" && (
         <p role="alert" className="text-red-500 text-sm">
           Что-то пошло не так. Попробуйте ещё раз или напишите нам напрямую.
@@ -131,7 +148,7 @@ export default function ApplicationForm({
 
       <button
         type="submit"
-        disabled={status === "loading"}
+        disabled={status === "loading" || !agreed}
         className="w-full bg-[#134E6F] text-[#F0F7FA] py-4 rounded-full text-sm font-medium hover:opacity-80 transition-opacity disabled:opacity-50 mt-4"
       >
         {status === "loading" ? "Отправляем..." : "Отправить заявку"}

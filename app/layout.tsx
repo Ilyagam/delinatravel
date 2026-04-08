@@ -83,12 +83,15 @@ export const metadata: Metadata = {
 // JSON-LD: TravelAgency — глобальная разметка для всего сайта
 const travelAgencySchema = {
   "@context": "https://schema.org",
-  "@type": "TravelAgency",
+  "@type": ["TravelAgency", "LocalBusiness"],
   name: "Delina Travel",
   description:
-    "Авторские групповые путешествия по Азии из Казахстана. Girls Trip, девичники, молодёжные туры.",
+    "Авторские групповые путешествия по Азии из Казахстана. Girls Trip, девичники, молодёжные туры. Группы до 12 человек с сопровождением организатора.",
   url: BASE_URL,
   telephone: "+77779470219",
+  image: `${BASE_URL}/photos/hero.jpg`,
+  inLanguage: "ru",
+  priceRange: "730000-2000000 KZT",
   sameAs: [
     "https://www.instagram.com/delina_travel",
     "https://t.me/dlnvltr",
@@ -102,13 +105,21 @@ const travelAgencySchema = {
     "@type": "Country",
     name: "Kazakhstan",
   },
-  priceRange: "от 799 000 ₸",
   contactPoint: {
     "@type": "ContactPoint",
     telephone: "+77779470219",
     contactType: "customer service",
     availableLanguage: ["Russian"],
   },
+};
+
+// JSON-LD: WebSite — для Sitelinks Search Box в Google
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Delina Travel",
+  url: BASE_URL,
+  inLanguage: "ru",
 };
 
 export default function RootLayout({
@@ -130,6 +141,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
         <JsonLd data={travelAgencySchema} />
+        <JsonLd data={websiteSchema} />
       </head>
       <body className={`${inter.variable} ${cormorant.variable} antialiased`}>
         <SiteAnalytics />

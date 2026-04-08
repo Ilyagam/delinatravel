@@ -43,16 +43,26 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-[#F0F7FA]/10 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
-          <span
-            className="text-5xl md:text-7xl font-light text-[#F0F7FA]/10 tracking-widest"
-            style={{ fontFamily: "var(--font-cormorant)" }}
-          >
-            DELINA
-          </span>
-          <span className="text-[#F0F7FA]/30 text-xs">
-            © {new Date().getFullYear()} Delina Travel
-          </span>
+        <div className="border-t border-[#F0F7FA]/10 pt-6">
+          <div className="flex flex-wrap gap-4 mb-4 text-xs text-[#F0F7FA]/40">
+            <a href="/privacy" className="hover:text-[#F0F7FA]/70 transition-colors">
+              Политика конфиденциальности
+            </a>
+            <a href="/oferta" className="hover:text-[#F0F7FA]/70 transition-colors">
+              Публичная оферта
+            </a>
+          </div>
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <span
+              className="text-5xl md:text-7xl font-light text-[#F0F7FA]/10 tracking-widest"
+              style={{ fontFamily: "var(--font-cormorant)" }}
+            >
+              DELINA
+            </span>
+            <span className="text-[#F0F7FA]/30 text-xs">
+              © {new Date().getFullYear()} Delina Travel. Алматы, Казахстан
+            </span>
+          </div>
         </div>
       </div>
     </footer>

@@ -65,16 +65,12 @@ export default async function TourPage({
     "@context": "https://schema.org",
     "@type": "TouristTrip",
     name: tour.title,
+    url: `${BASE_URL}/tours/${slug}`,
     description: tour.description || tour.short_description,
-    touristType: "Groups",
-    itinerary: {
-      "@type": "ItemList",
-      itemListElement: (tour.program ?? []).map((day, i) => ({
-        "@type": "ListItem",
-        position: i + 1,
-        name: day.title,
-        description: day.description,
-      })),
+    inLanguage: "ru",
+    touristType: {
+      "@type": "Audience",
+      audienceType: "Groups",
     },
     ...(tour.price_from && {
       offers: {
@@ -83,6 +79,11 @@ export default async function TourPage({
         priceCurrency: "KZT",
         availability: "https://schema.org/InStock",
         url: `${BASE_URL}/tours/${slug}`,
+        seller: {
+          "@type": "TravelAgency",
+          name: "Delina Travel",
+          url: BASE_URL,
+        },
       },
     }),
     image: (tour.image_urls ?? []).map((url) =>
@@ -95,10 +96,21 @@ export default async function TourPage({
     },
   };
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Главная", item: BASE_URL },
+      { "@type": "ListItem", position: 2, name: "Туры", item: `${BASE_URL}/#tours` },
+      { "@type": "ListItem", position: 3, name: tour.title, item: `${BASE_URL}/tours/${slug}` },
+    ],
+  };
+
   return (
     <>
       <Navbar />
       <JsonLd data={tourSchema} />
+      <JsonLd data={breadcrumbSchema} />
       <main>
         {/* Hero with title overlay */}
         <section className="relative">

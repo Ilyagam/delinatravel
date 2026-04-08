@@ -8,7 +8,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const tourEntries: MetadataRoute.Sitemap = tours.map((tour) => ({
     url: `${BASE_URL}/tours/${tour.slug}`,
-    lastModified: new Date(tour.created_at),
+    lastModified: new Date(),
     changeFrequency: "weekly",
     priority: 0.8,
   }));
@@ -19,6 +19,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: "daily",
       priority: 1,
+    },
+    {
+      url: `${BASE_URL}/privacy`,
+      lastModified: new Date(),
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
+    {
+      url: `${BASE_URL}/oferta`,
+      lastModified: new Date(),
+      changeFrequency: "yearly",
+      priority: 0.3,
     },
     ...tourEntries,
   ];
