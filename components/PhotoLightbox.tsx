@@ -42,35 +42,23 @@ export default function PhotoLightbox({ images, tourTitle }: PhotoLightboxProps)
 
   return (
     <>
-      {/* Галерея — сетка 2 колонки, вертикальные фото не обрезаются */}
-      <section className="px-4 md:px-10 py-6 bg-[#F0F7FA]">
-        <div className="max-w-4xl mx-auto grid grid-cols-2 gap-3">
+      {/* Галерея — компактная сетка 3 колонки, все фото видны сразу */}
+      <section className="px-4 md:px-10 py-4 bg-[#F0F7FA]">
+        <div className="max-w-4xl mx-auto grid grid-cols-3 gap-2">
           {images.map((url, i) => (
             <div
               key={i}
-              className={`relative rounded-xl overflow-hidden bg-[#134E6F]/10 cursor-pointer group ${
-                i === 0 && images.length > 1 ? "row-span-2" : ""
-              }`}
+              className="relative aspect-square rounded-lg overflow-hidden bg-[#134E6F]/10 cursor-pointer group"
               onClick={() => setLightboxIndex(i)}
             >
-              {/* REASON: aspect-[3/4] для вертикальных фото, первое фото крупнее (row-span-2) */}
-              <div className={`relative w-full ${
-                i === 0 && images.length > 1 ? "aspect-[3/4]" : "aspect-[3/4]"
-              }`}>
-                <Image
-                  src={url}
-                  alt={i === 0 ? tourTitle : `${tourTitle} — фото ${i + 1}`}
-                  fill
-                  priority={i === 0}
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  sizes={i === 0 ? "(max-width: 768px) 50vw, 50vw" : "(max-width: 768px) 50vw, 25vw"}
-                />
-              </div>
-              {i === 0 && (
-                <div className="absolute bottom-3 right-3 bg-black/50 backdrop-blur-sm text-white text-sm px-3 py-1.5 rounded-full">
-                  📸 {images.length} фото
-                </div>
-              )}
+              <Image
+                src={url}
+                alt={i === 0 ? tourTitle : `${tourTitle} — фото ${i + 1}`}
+                fill
+                priority={i < 3}
+                className="object-cover group-hover:scale-105 transition-transform duration-500"
+                sizes="(max-width: 768px) 33vw, 270px"
+              />
             </div>
           ))}
         </div>
