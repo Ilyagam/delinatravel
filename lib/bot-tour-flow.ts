@@ -21,6 +21,8 @@ const ADD_STEPS = [
   { key: "short_description", prompt: "📄 <b>Краткое описание</b> (1-2 предложения):" },
   { key: "what_included", prompt: "✅ <b>Что включено</b> (каждый пункт с новой строки):" },
   { key: "what_excluded", prompt: "❌ <b>Что НЕ включено</b> (каждый пункт с новой строки, или /skip):" },
+  { key: "description", prompt: "📝 <b>Подробное описание</b> тура (несколько предложений, или /skip):" },
+  { key: "accommodation", prompt: "🏨 <b>Проживание</b> (формат отелей, условия, или /skip):" },
 ];
 
 export async function handleAddStart(chatId: number): Promise<void> {
@@ -103,6 +105,8 @@ export async function handleAddStep(
     short_description: data.short_description,
     what_included: data.what_included,
     what_excluded: data.what_excluded || null,
+    description: data.description && data.description !== "/skip" ? data.description : null,
+    accommodation: data.accommodation && data.accommodation !== "/skip" ? data.accommodation : null,
     is_active: true,
   }).select("id").single();
 

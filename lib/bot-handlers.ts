@@ -392,9 +392,11 @@ async function handleCallback(query: CallbackQuery): Promise<void> {
         [{ text: "📍 Направление", callback_data: `ef:${id}:destination` }],
         [{ text: "📅 Даты", callback_data: `ef:${id}:dates` }],
         [{ text: "💰 Цена", callback_data: `ef:${id}:price_from` }],
-        [{ text: "📄 Описание", callback_data: `ef:${id}:short_description` }],
-        [{ text: "✅ Что включено", callback_data: `ef:${id}:what_included` }],
-        [{ text: "❌ Что не включено", callback_data: `ef:${id}:what_excluded` }],
+        [{ text: "📄 Кратко", callback_data: `ef:${id}:short_description` }],
+        [{ text: "📝 Описание", callback_data: `ef:${id}:description` }],
+        [{ text: "✅ Включено", callback_data: `ef:${id}:what_included` }],
+        [{ text: "❌ Не включено", callback_data: `ef:${id}:what_excluded` }],
+        [{ text: "🏨 Проживание", callback_data: `ef:${id}:accommodation` }],
         [
           { text: "📸 Добавить фото", callback_data: `add_photo:${id}` },
           { text: "🗑 Удалить фото", callback_data: `del_photos:${id}` },
@@ -421,6 +423,8 @@ async function handleCallback(query: CallbackQuery): Promise<void> {
         price_from: "цену (только число в тенге)", short_description: "краткое описание",
         what_included: "что включено (каждый пункт с новой строки)",
         what_excluded: "что НЕ включено (каждый пункт с новой строки)",
+        description: "подробное описание тура (несколько предложений)",
+        accommodation: "проживание (формат отелей, условия)",
       };
       await setSession(chatId, "edit_tour", field, { tour_id: id });
       await sendMessage(chatId, `✏️ Введи новое <b>${fieldNames[field] || field}</b>:\n\n/cancel — отмена`);
