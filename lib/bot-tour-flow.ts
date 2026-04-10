@@ -23,6 +23,7 @@ const ADD_STEPS = [
   { key: "what_excluded", prompt: "❌ <b>Что НЕ включено</b> (каждый пункт с новой строки, или /skip):" },
   { key: "description", prompt: "📝 <b>Подробное описание</b> тура (несколько предложений, или /skip):" },
   { key: "accommodation", prompt: "🏨 <b>Проживание</b> (формат отелей, условия, или /skip):" },
+  { key: "program", prompt: "📋 <b>Программа по дням</b> — каждый день с новой строки в формате:\nНазвание дня: описание\n\nПример:\nВылет. Куала-Лумпур: Прилёт, заселение, прогулка\nЗнакомство с городом: Экскурсия, рынки, смотровая\nПерелёт на Бали: Заселение на виллу, закат\n\nИли /skip чтобы пропустить" },
 ];
 
 export async function handleAddStart(chatId: number): Promise<void> {
@@ -68,7 +69,17 @@ export async function handleAddStep(
   }
 
   // Parse value based on field type
-  if (text !== "/skip" && (currentStep.key === "what_included" || currentStep.key === "what_excluded")) {
+  if (text !== "/skip" && currentStep.key === "program") {
+    // REASON: Парсинг "Название: описание" → [{day, title, description}]
+    const lines = text.split("\n").map((s: string) => s.trim()).filter(Boolean);
+    data[currentStep.key] = lines.map((line: string, i: number) => {
+      const colonIndex = line.indexOf(":");
+      if (colonIndex > 0) {
+        return { day: i + 1, title: line.slice(0, colonIndex).trim(), description: line.slice(colonIndex + 1).trim() };
+      }
+      return { day: i + 1, title: line, description: "" };
+    });
+  } else if (text !== "/skip" && (currentStep.key === "what_included" || currentStep.key === "what_excluded")) {
     data[currentStep.key] = text
       .split("\n")
       .map((s: string) => s.replace(/^[•\-–]\s*/, "").trim())
@@ -107,6 +118,7 @@ export async function handleAddStep(
     what_excluded: data.what_excluded || null,
     description: data.description && data.description !== "/skip" ? data.description : null,
     accommodation: data.accommodation && data.accommodation !== "/skip" ? data.accommodation : null,
+    program: data.program || null,
     is_active: true,
   }).select("id").single();
 
@@ -141,7 +153,16 @@ export async function handleEditStep(
   }
 
   let value: unknown;
-  if (field === "what_included" || field === "what_excluded") {
+  if (field === "program") {
+    const lines = text.split("\n").map((s: string) => s.trim()).filter(Boolean);
+    value = lines.map((line: string, i: number) => {
+      const colonIndex = line.indexOf(":");
+      if (colonIndex > 0) {
+        return { day: i + 1, title: line.slice(0, colonIndex).trim(), description: line.slice(colonIndex + 1).trim() };
+      }
+      return { day: i + 1, title: line, description: "" };
+    });
+  } else if (field === "what_included" || field === "what_excluded") {
     value = text
       .split("\n")
       .map((s: string) => s.replace(/^[•\-–]\s*/, "").trim())
