@@ -80,7 +80,11 @@ export async function getActiveTours(): Promise<Tour[]> {
     .order("created_at", { ascending: false });
 
   if (error) return SEED_TOURS;
-  return data as Tour[];
+  // REASON: URL из БД могут содержать пробелы — trim предотвращает 400 от Next.js Image
+  return (data as Tour[]).map((t) => ({
+    ...t,
+    image_urls: t.image_urls?.map((u) => u.trim()) ?? null,
+  }));
 }
 
 export async function getTourBySlug(slug: string): Promise<Tour | null> {
@@ -95,5 +99,10 @@ export async function getTourBySlug(slug: string): Promise<Tour | null> {
     .single();
 
   if (error) return null;
-  return data as Tour;
+  const tour = data as Tour;
+  // REASON: URL из БД могут содержать пробелы — trim предотвращает 400 от Next.js Image
+  if (tour.image_urls) {
+    tour.image_urls = tour.image_urls.map((u) => u.trim());
+  }
+  return tour;
 }
