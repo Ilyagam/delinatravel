@@ -42,49 +42,39 @@ export default function PhotoLightbox({ images, tourTitle }: PhotoLightboxProps)
 
   return (
     <>
-      {/* Hero — первое фото на весь экран */}
-      <section className="relative w-full">
-        <div
-          className="relative w-full aspect-[16/9] md:aspect-[21/9] cursor-pointer group"
-          onClick={() => setLightboxIndex(0)}
-        >
-          <Image
-            src={images[0]}
-            alt={tourTitle}
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors" />
-          <div className="absolute bottom-4 right-4 bg-black/50 backdrop-blur-sm text-white text-sm px-3 py-1.5 rounded-full">
-            📸 {images.length} фото
-          </div>
-        </div>
-      </section>
-
-      {/* Мозаика — остальные фото */}
-      {images.length > 1 && (
-        <section className="px-6 md:px-10 py-6 bg-[#F0F7FA]">
-          <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-3">
-            {images.slice(1).map((url, i) => (
-              <div
-                key={i}
-                className="relative aspect-[4/3] rounded-xl overflow-hidden bg-[#1A97B5] cursor-pointer group"
-                onClick={() => setLightboxIndex(i + 1)}
-              >
+      {/* Галерея — сетка 2 колонки, вертикальные фото не обрезаются */}
+      <section className="px-4 md:px-10 py-6 bg-[#F0F7FA]">
+        <div className="max-w-4xl mx-auto grid grid-cols-2 gap-3">
+          {images.map((url, i) => (
+            <div
+              key={i}
+              className={`relative rounded-xl overflow-hidden bg-[#134E6F]/10 cursor-pointer group ${
+                i === 0 && images.length > 1 ? "row-span-2" : ""
+              }`}
+              onClick={() => setLightboxIndex(i)}
+            >
+              {/* REASON: aspect-[3/4] для вертикальных фото, первое фото крупнее (row-span-2) */}
+              <div className={`relative w-full ${
+                i === 0 && images.length > 1 ? "aspect-[3/4]" : "aspect-[3/4]"
+              }`}>
                 <Image
                   src={url}
-                  alt={`${tourTitle} — фото ${i + 2}`}
+                  alt={i === 0 ? tourTitle : `${tourTitle} — фото ${i + 1}`}
                   fill
+                  priority={i === 0}
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  sizes="(max-width: 768px) 50vw, 33vw"
+                  sizes={i === 0 ? "(max-width: 768px) 50vw, 50vw" : "(max-width: 768px) 50vw, 25vw"}
                 />
               </div>
-            ))}
-          </div>
-        </section>
-      )}
+              {i === 0 && (
+                <div className="absolute bottom-3 right-3 bg-black/50 backdrop-blur-sm text-white text-sm px-3 py-1.5 rounded-full">
+                  📸 {images.length} фото
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* Lightbox — полноэкранный просмотр */}
       {lightboxIndex !== null && (
