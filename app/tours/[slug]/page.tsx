@@ -244,6 +244,7 @@ export default async function TourPage({
                 <ApplicationForm
                   preselectedTourId={tour.id}
                   preselectedTourTitle={tour.title}
+                  variant="dark"
                 />
 
                 <div className="mt-6 pt-6 border-t border-[#F0F7FA]/10 flex flex-col gap-3">

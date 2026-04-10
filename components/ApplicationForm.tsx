@@ -7,13 +7,19 @@ interface ApplicationFormProps {
   tours?: Tour[];
   preselectedTourId?: string;
   preselectedTourTitle?: string;
+  variant?: "light" | "dark";
 }
 
 export default function ApplicationForm({
   tours = [],
   preselectedTourId,
   preselectedTourTitle,
+  variant = "light",
 }: ApplicationFormProps) {
+  const isDark = variant === "dark";
+  const inputClass = isDark
+    ? "w-full border-b border-[#F0F7FA]/30 bg-transparent px-1 py-3 text-[#F0F7FA] placeholder-[#F0F7FA]/50 outline-none focus:border-[#38BDF8] transition-colors"
+    : "w-full border-b border-[#134E6F]/30 bg-transparent px-1 py-3 text-[#134E6F] placeholder-[#64929E] outline-none focus:border-[#134E6F] transition-colors";
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -56,17 +62,17 @@ export default function ApplicationForm({
     return (
       <div className="text-center py-12">
         <div
-          className="text-6xl font-light text-[#134E6F] mb-4"
+          className={`text-6xl font-light mb-4 ${isDark ? "text-[#F0F7FA]" : "text-[#134E6F]"}`}
           style={{ fontFamily: "var(--font-cormorant)" }}
         >
           Отлично!
         </div>
-        <p className="text-[#64929E] mb-6">
+        <p className={isDark ? "text-[#F0F7FA]/70 mb-6" : "text-[#64929E] mb-6"}>
           Заявка отправлена. Мы свяжемся с вами в ближайшее время.
         </p>
         <button
           onClick={() => setStatus("idle")}
-          className="text-sm underline underline-offset-4 text-[#134E6F]"
+          className={`text-sm underline underline-offset-4 ${isDark ? "text-[#38BDF8]" : "text-[#134E6F]"}`}
         >
           Отправить ещё одну
         </button>
@@ -85,7 +91,7 @@ export default function ApplicationForm({
           required
           value={form.name}
           onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-          className="w-full border-b border-[#134E6F]/30 bg-transparent px-1 py-3 text-[#134E6F] placeholder-[#64929E] outline-none focus:border-[#134E6F] transition-colors"
+          className={inputClass}
         />
       </div>
       <div>
@@ -97,7 +103,7 @@ export default function ApplicationForm({
           required
           value={form.phone}
           onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
-          className="w-full border-b border-[#134E6F]/30 bg-transparent px-1 py-3 text-[#134E6F] placeholder-[#64929E] outline-none focus:border-[#134E6F] transition-colors"
+          className={inputClass}
         />
       </div>
       {tours.length > 0 && !preselectedTourId && (
@@ -107,7 +113,10 @@ export default function ApplicationForm({
             id="app-tour"
             value={form.tour_id}
             onChange={handleTourChange}
-            className="w-full border-b border-[#134E6F]/30 bg-transparent px-1 py-3 text-[#134E6F] outline-none focus:border-[#134E6F] transition-colors appearance-none cursor-pointer"
+            className={isDark
+              ? "w-full border-b border-[#F0F7FA]/30 bg-transparent px-1 py-3 text-[#F0F7FA] outline-none focus:border-[#38BDF8] transition-colors appearance-none cursor-pointer"
+              : "w-full border-b border-[#134E6F]/30 bg-transparent px-1 py-3 text-[#134E6F] outline-none focus:border-[#134E6F] transition-colors appearance-none cursor-pointer"
+            }
           >
             <option value="">Выбрать тур (необязательно)</option>
             {tours.map((t) => (
@@ -119,8 +128,11 @@ export default function ApplicationForm({
         </div>
       )}
       {preselectedTourTitle && (
-        <div className="py-3 text-[#134E6F]/70 text-sm border-b border-[#134E6F]/10">
-          Тур: <span className="font-medium text-[#134E6F]">{preselectedTourTitle}</span>
+        <div className={isDark
+          ? "py-3 text-[#F0F7FA]/70 text-sm border-b border-[#F0F7FA]/10"
+          : "py-3 text-[#134E6F]/70 text-sm border-b border-[#134E6F]/10"
+        }>
+          Тур: <span className={isDark ? "font-medium text-[#F0F7FA]" : "font-medium text-[#134E6F]"}>{preselectedTourTitle}</span>
         </div>
       )}
 
@@ -129,19 +141,19 @@ export default function ApplicationForm({
           type="checkbox"
           checked={agreed}
           onChange={(e) => setAgreed(e.target.checked)}
-          className="mt-1 accent-[#134E6F]"
+          className={isDark ? "mt-1 accent-[#38BDF8]" : "mt-1 accent-[#134E6F]"}
           required
         />
-        <span className="text-xs text-[#64929E] leading-relaxed">
+        <span className={isDark ? "text-xs text-[#F0F7FA]/60 leading-relaxed" : "text-xs text-[#64929E] leading-relaxed"}>
           Я согласен(а) на{" "}
-          <a href="/privacy" className="underline hover:text-[#134E6F]">
+          <a href="/privacy" className={isDark ? "underline hover:text-[#F0F7FA]" : "underline hover:text-[#134E6F]"}>
             обработку персональных данных
           </a>
         </span>
       </label>
 
       {status === "error" && (
-        <p role="alert" className="text-red-500 text-sm">
+        <p role="alert" className="text-red-400 text-sm">
           Что-то пошло не так. Попробуйте ещё раз или напишите нам напрямую.
         </p>
       )}
@@ -149,7 +161,10 @@ export default function ApplicationForm({
       <button
         type="submit"
         disabled={status === "loading" || !agreed}
-        className="w-full bg-[#134E6F] text-[#F0F7FA] py-4 rounded-full text-sm font-medium hover:opacity-80 transition-opacity disabled:opacity-50 mt-4"
+        className={isDark
+          ? "w-full bg-[#38BDF8] text-[#134E6F] py-4 rounded-full text-sm font-medium hover:opacity-80 transition-opacity disabled:opacity-50 mt-4"
+          : "w-full bg-[#134E6F] text-[#F0F7FA] py-4 rounded-full text-sm font-medium hover:opacity-80 transition-opacity disabled:opacity-50 mt-4"
+        }
       >
         {status === "loading" ? "Отправляем..." : "Отправить заявку"}
       </button>
