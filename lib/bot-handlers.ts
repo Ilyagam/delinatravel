@@ -394,6 +394,7 @@ async function handleCallback(query: CallbackQuery): Promise<void> {
         [{ text: "💰 Цена", callback_data: `ef:${id}:price_from` }],
         [{ text: "📄 Описание", callback_data: `ef:${id}:short_description` }],
         [{ text: "✅ Что включено", callback_data: `ef:${id}:what_included` }],
+        [{ text: "❌ Что не включено", callback_data: `ef:${id}:what_excluded` }],
         [
           { text: "📸 Добавить фото", callback_data: `add_photo:${id}` },
           { text: "🗑 Удалить фото", callback_data: `del_photos:${id}` },
@@ -419,6 +420,7 @@ async function handleCallback(query: CallbackQuery): Promise<void> {
         title: "название", destination: "направление", dates: "даты",
         price_from: "цену (только число в тенге)", short_description: "краткое описание",
         what_included: "что включено (каждый пункт с новой строки)",
+        what_excluded: "что НЕ включено (каждый пункт с новой строки)",
       };
       await setSession(chatId, "edit_tour", field, { tour_id: id });
       await sendMessage(chatId, `✏️ Введи новое <b>${fieldNames[field] || field}</b>:\n\n/cancel — отмена`);

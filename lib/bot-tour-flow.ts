@@ -20,6 +20,7 @@ const ADD_STEPS = [
   { key: "price_from", prompt: "💰 <b>Цена от</b> (только число, без пробелов):" },
   { key: "short_description", prompt: "📄 <b>Краткое описание</b> (1-2 предложения):" },
   { key: "what_included", prompt: "✅ <b>Что включено</b> (каждый пункт с новой строки):" },
+  { key: "what_excluded", prompt: "❌ <b>Что НЕ включено</b> (каждый пункт с новой строки, или /skip):" },
 ];
 
 export async function handleAddStart(chatId: number): Promise<void> {
@@ -53,8 +54,19 @@ export async function handleAddStep(
   const currentStep = ADD_STEPS[currentIndex];
   const data: Record<string, unknown> = { ...session.data, _updated_at: Date.now() };
 
+  // REASON: /skip пропускает необязательный шаг (what_excluded)
+  if (text === "/skip") {
+    const nextIndex = currentIndex + 1;
+    if (nextIndex < ADD_STEPS.length) {
+      await setSession(chatId, "add_tour", ADD_STEPS[nextIndex].key, data);
+      await sendMessage(chatId, ADD_STEPS[nextIndex].prompt);
+      return;
+    }
+    // Если это последний шаг — идём к сохранению (код ниже обработает)
+  }
+
   // Parse value based on field type
-  if (currentStep.key === "what_included") {
+  if (text !== "/skip" && (currentStep.key === "what_included" || currentStep.key === "what_excluded")) {
     data[currentStep.key] = text
       .split("\n")
       .map((s: string) => s.replace(/^[•\-–]\s*/, "").trim())
@@ -90,6 +102,7 @@ export async function handleAddStep(
     price_from: data.price_from != null ? Number(data.price_from) : null,
     short_description: data.short_description,
     what_included: data.what_included,
+    what_excluded: data.what_excluded || null,
     is_active: true,
   }).select("id").single();
 
@@ -124,7 +137,7 @@ export async function handleEditStep(
   }
 
   let value: unknown;
-  if (field === "what_included") {
+  if (field === "what_included" || field === "what_excluded") {
     value = text
       .split("\n")
       .map((s: string) => s.replace(/^[•\-–]\s*/, "").trim())
