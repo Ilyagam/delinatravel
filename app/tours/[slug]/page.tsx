@@ -193,7 +193,7 @@ export default async function TourPage({
                     <ul className="space-y-2">
                       {tour.what_excluded.map((item, i) => (
                         <li key={i} className="flex items-start gap-2 text-sm text-[#64929E]">
-                          <span className="text-[#64929E]/40 mt-0.5 text-xs">✕</span>
+                          <span className="text-[#64929E]/60 mt-0.5">—</span>
                           {item}
                         </li>
                       ))}
