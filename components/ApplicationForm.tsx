@@ -29,9 +29,48 @@ export default function ApplicationForm({
   });
   const [agreed, setAgreed] = useState(false);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [phoneError, setPhoneError] = useState("");
+
+  // REASON: Казахстанский формат +7 XXX XXX XX XX (11 цифр) или международный (10-15 цифр)
+  function validatePhone(phone: string): boolean {
+    const digits = phone.replace(/\D/g, "");
+    return digits.length >= 10 && digits.length <= 15;
+  }
+
+  // REASON: Автоформат — при вводе цифр подставляет +7 (XXX) XXX-XX-XX
+  function formatPhone(value: string): string {
+    const digits = value.replace(/\D/g, "");
+    if (digits.length === 0) return "";
+
+    // Казахстан/Россия: начинается с 7 или 8
+    if (digits[0] === "7" || digits[0] === "8") {
+      const d = digits[0] === "8" ? "7" + digits.slice(1) : digits;
+      let result = "+7";
+      if (d.length > 1) result += " (" + d.slice(1, 4);
+      if (d.length >= 4) result += ") " + d.slice(4, 7);
+      if (d.length >= 7) result += "-" + d.slice(7, 9);
+      if (d.length >= 9) result += "-" + d.slice(9, 11);
+      return result;
+    }
+
+    // Другие страны: просто +цифры
+    return "+" + digits;
+  }
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatPhone(e.target.value);
+    setForm((f) => ({ ...f, phone: formatted }));
+    if (phoneError) setPhoneError("");
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!validatePhone(form.phone)) {
+      setPhoneError("Введите корректный номер телефона");
+      return;
+    }
+
     setStatus("loading");
 
     try {
@@ -60,9 +99,9 @@ export default function ApplicationForm({
 
   if (status === "success") {
     return (
-      <div className="text-center py-12">
+      <div className="flex flex-col items-center justify-center text-center py-8 min-h-[280px]">
         <div
-          className={`text-6xl font-light mb-4 ${isDark ? "text-[#F0F7FA]" : "text-[#134E6F]"}`}
+          className={`text-5xl font-light mb-4 ${isDark ? "text-[#F0F7FA]" : "text-[#134E6F]"}`}
           style={{ fontFamily: "var(--font-cormorant)" }}
         >
           Отлично!
@@ -99,12 +138,15 @@ export default function ApplicationForm({
         <input
           id="app-phone"
           type="tel"
-          placeholder="Номер телефона / WhatsApp"
+          placeholder="+7 (___) ___-__-__"
           required
           value={form.phone}
-          onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
+          onChange={handlePhoneChange}
           className={inputClass}
         />
+        {phoneError && (
+          <p className="text-red-400 text-xs mt-1">{phoneError}</p>
+        )}
       </div>
       {tours.length > 0 && !preselectedTourId && (
         <div>
