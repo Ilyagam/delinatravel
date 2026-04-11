@@ -53,3 +53,26 @@ body {
   overflow: hidden;
   line-height: 0;
 }
+
+/* Горизонтальная карусель с drag-scroll */
+.scroll-carousel {
+  display: flex;
+  overflow-x: auto;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.scroll-carousel:active {
+  cursor: grabbing;
+}
+
+/* Скрытие скроллбара */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

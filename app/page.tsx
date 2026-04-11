@@ -5,7 +5,6 @@ import TourFormats from "@/components/TourFormats";
 import AboutSection from "@/components/AboutSection";
 import AdvantagesSection from "@/components/AdvantagesSection";
 import ContactSection from "@/components/ContactSection";
-import FAQSection from "@/components/FAQSection";
 import InstagramSection from "@/components/InstagramSection";
 import Footer from "@/components/Footer";
 import { getActiveTours } from "@/lib/tours";
@@ -43,10 +42,9 @@ export default async function HomePage() {
         </section>
 
         <TourFormats />
+        <InstagramSection />
         <AboutSection />
         <AdvantagesSection />
-        <InstagramSection />
-        <FAQSection />
         <ContactSection tours={tours} />
       </main>
       <Footer />
