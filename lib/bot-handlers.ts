@@ -214,9 +214,9 @@ async function handleApps(chatId: number, filter: string): Promise<void> {
       .filter(Boolean)
       .join("\n");
 
+    // REASON: tel: ссылки не поддерживаются в Telegram inline buttons — только https/tg
     const keyboard: InlineKeyboard = [
       [
-        { text: "📞 Позвонить", url: `tel:+${phone}` },
         { text: "💬 WhatsApp", url: `https://wa.me/${phone}` },
       ],
     ];

@@ -37,10 +37,9 @@ export async function sendApplicationToTelegram(
 
   const phone = normalizePhone(data.phone);
 
-  // REASON: Inline-кнопки позволяют Деле сразу позвонить или написать в WhatsApp
+  // REASON: tel: ссылки не поддерживаются в Telegram inline buttons — только https/tg
   const inline_keyboard: { text: string; url?: string; callback_data?: string }[][] = [
     [
-      { text: "📞 Позвонить", url: `tel:+${phone}` },
       { text: "💬 WhatsApp", url: `https://wa.me/${phone}` },
     ],
   ];
