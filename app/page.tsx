@@ -21,9 +21,9 @@ export default async function HomePage() {
         <HeroSection />
 
         {/* Tours section */}
-        <section id="tours" className="py-20 md:py-28 px-6 md:px-10">
+        <section id="tours" className="py-12 md:py-16 px-6 md:px-10">
           <div className="max-w-6xl mx-auto">
-            <div className="mb-14">
+            <div className="mb-8">
               <span
                 className="font-handwritten text-xl block mb-3"
                 style={{ fontFamily: "'Caveat', cursive", color: "#F0A868" }}

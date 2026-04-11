@@ -27,7 +27,7 @@ const formats = [
 
 export default function TourFormats() {
   return (
-    <section id="formats" className="py-20 md:py-28 px-6 md:px-10">
+    <section id="formats" className="py-12 md:py-16 px-6 md:px-10">
       <div className="max-w-6xl mx-auto">
         <div className="mb-14">
           <span

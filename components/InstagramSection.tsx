@@ -33,7 +33,7 @@ export default async function InstagramSection() {
     <section className="py-12 md:py-16 overflow-hidden">
       <div className="max-w-6xl mx-auto px-6 md:px-10">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-10 gap-4">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-6 gap-4">
           <div>
             <span
               className="font-handwritten text-xl block mb-3"
