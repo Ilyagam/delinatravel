@@ -115,13 +115,13 @@ export default function HeroSection() {
 
           <div className="flex flex-col sm:flex-row gap-3">
             <a
-              href="#tours"
+              href="/#tours"
               className="bg-[#F0F7FA] text-[#134E6F] px-8 py-3.5 rounded-full text-sm md:text-base font-medium text-center hover:bg-white transition-colors shadow-lg"
             >
               Посмотреть туры
             </a>
             <a
-              href="#contact"
+              href="/#contact"
               className="border-2 border-[#F0F7FA]/60 text-[#F0F7FA] px-8 py-3.5 rounded-full text-sm md:text-base font-medium text-center hover:bg-[#F0F7FA]/15 transition-colors"
             >
               Оставить заявку

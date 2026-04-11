@@ -78,6 +78,16 @@ export default function FAQSection() {
             </details>
           ))}
         </div>
+
+        <div className="text-center mt-12">
+          <p className="text-[#64929E] mb-4">Остались вопросы? Мы с радостью ответим!</p>
+          <a
+            href="/#contact"
+            className="inline-flex items-center gap-2 bg-[#134E6F] hover:bg-[#134E6F]/90 text-white px-8 py-4 rounded-full text-base font-medium transition-colors"
+          >
+            Хочу в тур!
+          </a>
+        </div>
       </div>
     </section>
   );

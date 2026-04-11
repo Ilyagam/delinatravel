@@ -61,7 +61,7 @@ export default function TourFormats() {
                 {format.description}
               </p>
               <a
-                href="#contact"
+                href="/#contact"
                 className="mt-auto inline-flex items-center gap-2 text-[#38BDF8] text-sm hover:gap-3 transition-all"
               >
                 Узнать подробнее →

@@ -30,7 +30,7 @@ export default async function InstagramSection() {
   const hasPhotos = posts.length > 0;
 
   return (
-    <section className="py-20 md:py-28 overflow-hidden">
+    <section className="py-12 md:py-16 overflow-hidden">
       <div className="max-w-6xl mx-auto px-6 md:px-10">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-10 gap-4">
@@ -86,7 +86,7 @@ export default async function InstagramSection() {
       {/* CTA */}
       <div className="text-center mt-10">
         <a
-          href="#contact"
+          href="/#contact"
           className="inline-flex items-center gap-2 bg-[#1A97B5] hover:bg-[#134E6F] text-white px-8 py-4 rounded-full text-base font-medium transition-colors"
           style={{ scrollBehavior: "smooth" }}
         >

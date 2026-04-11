@@ -38,13 +38,13 @@ export default function Navbar() {
           scrolled ? "text-[#134E6F]" : "text-white"
         }`}
       >
-        <a href="#tours" className={`hover:opacity-70 transition-opacity ${scrolled ? "" : "drop-shadow-sm"}`}>
+        <a href="/#tours" className={`hover:opacity-70 transition-opacity ${scrolled ? "" : "drop-shadow-sm"}`}>
           Туры
         </a>
-        <a href="#formats" className={`hover:opacity-70 transition-opacity ${scrolled ? "" : "drop-shadow-sm"}`}>
+        <a href="/#formats" className={`hover:opacity-70 transition-opacity ${scrolled ? "" : "drop-shadow-sm"}`}>
           Форматы
         </a>
-        <a href="#about" className={`hover:opacity-70 transition-opacity ${scrolled ? "" : "drop-shadow-sm"}`}>
+        <a href="/#about" className={`hover:opacity-70 transition-opacity ${scrolled ? "" : "drop-shadow-sm"}`}>
           О нас
         </a>
         <a
@@ -86,21 +86,21 @@ export default function Navbar() {
       {open && (
         <div className="absolute top-full left-0 right-0 bg-[#F0F7FA] border-t border-[#134E6F]/10 px-6 py-6 flex flex-col gap-4 md:hidden shadow-lg">
           <a
-            href="#tours"
+            href="/#tours"
             onClick={() => setOpen(false)}
             className="text-lg text-[#134E6F]"
           >
             Туры
           </a>
           <a
-            href="#formats"
+            href="/#formats"
             onClick={() => setOpen(false)}
             className="text-lg text-[#134E6F]"
           >
             Форматы
           </a>
           <a
-            href="#about"
+            href="/#about"
             onClick={() => setOpen(false)}
             className="text-lg text-[#134E6F]"
           >
