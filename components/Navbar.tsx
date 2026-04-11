@@ -48,14 +48,14 @@ export default function Navbar() {
           О нас
         </a>
         <a
-          href="#contact"
+          href="/#contact"
           className={`px-5 xl:px-6 py-2 xl:py-2.5 rounded-full text-sm xl:text-base transition-colors ${
             scrolled
               ? "bg-[#134E6F] text-white hover:bg-[#134E6F]/90"
               : "bg-white/20 backdrop-blur-sm text-white border border-white/40 hover:bg-white/30"
           }`}
         >
-          Оставить заявку
+          Хочу в тур!
         </a>
       </div>
 
@@ -107,11 +107,11 @@ export default function Navbar() {
             О нас
           </a>
           <a
-            href="#contact"
+            href="/#contact"
             onClick={() => setOpen(false)}
             className="bg-[#134E6F] text-[#F0F7FA] px-5 py-3 rounded-full text-center"
           >
-            Оставить заявку
+            Хочу в тур!
           </a>
         </div>
       )}
