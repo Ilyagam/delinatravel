@@ -9,6 +9,9 @@ import JsonLd from "@/components/JsonLd";
 import PhotoLightbox from "@/components/PhotoLightbox";
 import { getTourBySlug, getActiveTours } from "@/lib/tours";
 
+// REASON: ISR — обновлять данные тура из Supabase каждые 60 секунд
+export const revalidate = 60;
+
 const BASE_URL = "https://delinatravel.kz";
 
 export async function generateMetadata({
