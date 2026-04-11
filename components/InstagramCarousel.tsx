@@ -189,7 +189,15 @@ export default function InstagramCarousel({ posts }: { posts: InstagramPost[] })
               href={posts[lightbox].permalink}
               target="_blank"
               rel="noopener noreferrer"
-              style={{ color: "#F0A868", fontSize: 13, marginLeft: 16 }}
+              style={{
+                color: "#fff",
+                fontSize: 13,
+                marginLeft: 16,
+                background: "linear-gradient(45deg, #833AB4, #FD1D1D, #F77737)",
+                padding: "4px 12px",
+                borderRadius: 20,
+                textDecoration: "none",
+              }}
             >
               Открыть в Instagram →
             </a>

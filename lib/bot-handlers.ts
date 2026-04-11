@@ -13,7 +13,7 @@ import {
   TelegramUpdate,
   CallbackQuery,
 } from "./telegram-bot";
-import { getSession, clearSession } from "./bot-state";
+import { getSession, setSession, clearSession } from "./bot-state";
 import { handleAddStart, handleAddStep, handleEditStep, escapeHtml } from "./bot-tour-flow";
 import { handlePhotoMessage } from "./bot-photo-handler";
 
@@ -47,10 +47,18 @@ export async function handleUpdate(update: TelegramUpdate): Promise<void> {
     if (text === "➕ Добавить тур" || text === "/add") return handleAddStart(chatId);
     if (text === "📩 Заявки" || text === "/apps") return handleApps(chatId, "new");
     if (text === "📊 Статистика" || text === "/stats") return handleStats(chatId);
+    if (text === "📸 Instagram" || text === "/instagram") return handleInstagramStart(chatId);
     if (text === "/cancel") return handleCancel(chatId);
 
     // Multi-step flows
     const session = await getSession(chatId);
+
+    // REASON: /done завершает загрузку фото Instagram
+    if ((text === "/done" || text === "/skip") && session.action === "upload_instagram") {
+      await clearSession(chatId);
+      await sendMessage(chatId, "✅ Лента Instagram обновлена! Фото появятся на сайте в течение минуты.", { reply_keyboard: MAIN_MENU });
+      return;
+    }
 
     // REASON: /done завершает загрузку фото и /skip пропускает шаг фото в add flow
     if ((text === "/done" || text === "/skip") && (session.action === "upload_photo" || session.action === "add_tour_photo")) {
@@ -67,6 +75,13 @@ export async function handleUpdate(update: TelegramUpdate): Promise<void> {
     // REASON: Если Деля отправила текст во время ожидания фото — подсказать
     if (session.action === "upload_photo" || session.action === "add_tour_photo") {
       await sendMessage(chatId, "📸 Отправь фото или нажми /done\nОтменить — /cancel");
+      return;
+    }
+
+    // REASON: Текст в режиме Instagram — сохранить как caption для следующего фото
+    if (session.action === "upload_instagram") {
+      await setSession(chatId, "upload_instagram", "waiting", { ...session.data, pending_caption: text });
+      await sendMessage(chatId, "✅ Подпись сохранена. Теперь отправь фото.\n\n/done — завершить, /cancel — отмена");
       return;
     }
 
@@ -304,6 +319,20 @@ async function handleStatsInner(chatId: number): Promise<void> {
   ].join("\n");
 
   await sendMessage(chatId, text, { reply_keyboard: MAIN_MENU });
+}
+
+// ============ /instagram ============
+
+async function handleInstagramStart(chatId: number): Promise<void> {
+  await setSession(chatId, "upload_instagram", "waiting", {});
+  await sendMessage(
+    chatId,
+    "📸 <b>Обновление ленты Instagram на сайте</b>\n\n" +
+    "Отправь фото для ленты на сайте.\n" +
+    "Можно отправить подпись текстом перед фото.\n\n" +
+    "/done — завершить\n" +
+    "/cancel — отмена"
+  );
 }
 
 // ============ /cancel ============

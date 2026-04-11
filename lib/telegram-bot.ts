@@ -53,6 +53,7 @@ export type ReplyKeyboard = ReplyKeyboardButton[][];
 export const MAIN_MENU: ReplyKeyboard = [
   [{ text: "📋 Мои туры" }, { text: "➕ Добавить тур" }],
   [{ text: "📩 Заявки" }, { text: "📊 Статистика" }],
+  [{ text: "📸 Instagram" }],
 ];
 
 // ============ API METHODS ============

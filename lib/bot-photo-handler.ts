@@ -25,6 +25,11 @@ export async function handlePhotoMessage(
     return uploadPhotoToExistingTour(chatId, photos, tourId);
   }
 
+  // Режим загрузки фото для ленты Instagram на сайте
+  if (session.action === "upload_instagram") {
+    return uploadPhotoToInstagram(chatId, photos, session);
+  }
+
   // Фото вне контекста — подсказка
   await sendMessage(
     chatId,
@@ -65,6 +70,78 @@ async function uploadPhotoToExistingTour(
     console.error("Photo upload error:", error);
     await sendMessage(chatId, "❌ Ошибка загрузки фото. Попробуй ещё раз или нажми /done");
   }
+}
+
+// REASON: Загрузка фото для ленты Instagram на сайте
+async function uploadPhotoToInstagram(
+  chatId: number,
+  photos: TelegramPhoto[],
+  session: BotSession
+): Promise<void> {
+  try {
+    const fileId = getLargestPhotoFileId(photos);
+    const photoUrl = await downloadAndUploadInstagramPhoto(fileId);
+    const caption = (session.data.pending_caption as string) || "";
+
+    // Сохранить в таблицу instagram_posts
+    const supabase = createServiceClient();
+    await supabase.from("instagram_posts").insert({
+      instagram_id: Date.now().toString(),
+      image_url: photoUrl,
+      caption: caption.slice(0, 200),
+      permalink: "https://www.instagram.com/delina_travel/",
+      posted_at: new Date().toISOString(),
+    });
+
+    // Сбросить pending_caption после использования
+    const { setSession } = await import("./bot-state");
+    await setSession(chatId, "upload_instagram", "waiting", {});
+
+    const count = (session.data._photo_count as number || 0) + 1;
+    await sendMessage(
+      chatId,
+      `✅ Фото загружено в ленту!${caption ? ` (подпись: "${caption.slice(0, 50)}...")` : ""}\n\n📸 Отправь ещё или нажми /done`
+    );
+  } catch (error) {
+    console.error("Instagram photo upload error:", error);
+    await sendMessage(chatId, "❌ Ошибка загрузки фото. Попробуй ещё раз.");
+  }
+}
+
+// REASON: Скачать фото из Telegram → загрузить в Supabase Storage bucket instagram-photos
+async function downloadAndUploadInstagramPhoto(fileId: string): Promise<string> {
+  const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN!;
+  const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+
+  const fileResponse = await fetch(
+    `https://api.telegram.org/bot${BOT_TOKEN}/getFile?file_id=${fileId}`
+  );
+  const fileData = await fileResponse.json();
+  if (!fileData.ok || !fileData.result?.file_path) {
+    throw new Error("Failed to get file path from Telegram");
+  }
+
+  const filePath = fileData.result.file_path as string;
+  const ext = filePath.split(".").pop() || "jpg";
+  const fileName = `posts/${Date.now()}.${ext}`;
+
+  const downloadUrl = `https://api.telegram.org/file/bot${BOT_TOKEN}/${filePath}`;
+  const imageResponse = await fetch(downloadUrl);
+  const imageBuffer = await imageResponse.arrayBuffer();
+
+  const supabase = createServiceClient();
+  const { error } = await supabase.storage
+    .from("instagram-photos")
+    .upload(fileName, imageBuffer, {
+      contentType: `image/${ext === "jpg" ? "jpeg" : ext}`,
+      upsert: false,
+    });
+
+  if (error) {
+    throw new Error(`Supabase upload error: ${error.message}`);
+  }
+
+  return `${SUPABASE_URL}/storage/v1/object/public/instagram-photos/${fileName}`;
 }
 
 // REASON: Тур уже создан в БД на предыдущем шаге — просто закрываем сессию фото
