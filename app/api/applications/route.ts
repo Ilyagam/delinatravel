@@ -35,6 +35,35 @@ export async function POST(req: NextRequest) {
       applicationId = inserted?.id;
     }
 
+    // REASON: дублируем заявку в Flick CRM (лид в тенант delina-travel). Не блокирует ответ
+    // пользователю — если CRM недоступна, заявка всё равно сохранена в Supabase + Telegram.
+    if (process.env.CRM_WEBHOOK_URL) {
+      try {
+        const notes = [
+          body.tour_title ? `Тур: ${body.tour_title}` : null,
+          body.message || null,
+        ].filter(Boolean).join("\n");
+        const res = await fetch(process.env.CRM_WEBHOOK_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": process.env.CRM_WEBHOOK_API_KEY || "",
+          },
+          body: JSON.stringify({
+            name: body.name,
+            phone: body.phone,
+            source: "website",
+            notes: notes || null,
+          }),
+        });
+        if (!res.ok) {
+          console.error("CRM webhook non-OK:", res.status, await res.text().catch(() => ""));
+        }
+      } catch (e) {
+        console.error("CRM webhook failed:", e);
+      }
+    }
+
     // Send to Telegram with action buttons
     await sendApplicationToTelegram({ ...body, application_id: applicationId });
 
