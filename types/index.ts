@@ -10,6 +10,14 @@ export interface Tour {
   what_included: string[] | null;
   what_excluded: string[] | null;
   program: ProgramDay[] | null;
+  // REASON: формат программы — 'days' (по дням, поле program) | 'plan' (общий план, program_text).
+  // Опциональны: до миграции Supabase сайта этих колонок ещё нет (select * их не вернёт).
+  program_mode?: "days" | "plan" | null;
+  program_text?: string | null;
+  // REASON: блок «Гид/сопровождающий» — карточка для страницы тура (jsonb из CRM, ключи camelCase).
+  guide?: TourGuideCard | null;
+  // REASON: блок «Для кого этот тур» — короткое описание целевой аудитории.
+  audience?: string | null;
   accommodation: string | null;
   image_urls: string[] | null;
   is_active: boolean;
@@ -20,6 +28,14 @@ export interface ProgramDay {
   day: number;
   title: string;
   description: string;
+  imageUrl?: string; // опциональное фото дня (приходит из CRM как camelCase)
+}
+
+export interface TourGuideCard {
+  name: string;
+  photoUrl?: string;
+  description?: string;
+  link?: string;
 }
 
 export interface Application {

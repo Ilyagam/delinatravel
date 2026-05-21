@@ -39,10 +39,22 @@ export default function ProgramAccordion({ program }: ProgramAccordionProps) {
             </span>
           </button>
           {openDay === i && (
-            <div className="px-6 pb-5 pl-[4.5rem]">
-              <p className="text-[#64929E] text-sm leading-relaxed">
-                {day.description}
-              </p>
+            <div className="px-6 pb-5 pl-[4.5rem] space-y-3">
+              {day.description && (
+                <p className="text-[#64929E] text-sm leading-relaxed">
+                  {day.description}
+                </p>
+              )}
+              {/* фото дня (внешний URL из CRM) — обычный img, чтобы не зависеть от remotePatterns */}
+              {day.imageUrl && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={day.imageUrl.trim()}
+                  alt={day.title}
+                  loading="lazy"
+                  className="rounded-xl w-full max-w-md object-cover"
+                />
+              )}
             </div>
           )}
         </div>

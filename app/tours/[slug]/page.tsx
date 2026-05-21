@@ -205,7 +205,8 @@ export default async function TourPage({
                 )}
               </div>
 
-              {tour.program && tour.program.length > 0 && (
+              {((tour.program_mode === "plan" && tour.program_text) ||
+                (tour.program && tour.program.length > 0)) && (
                 <div>
                   <h2
                     className="text-3xl font-light text-[#134E6F] mb-6"
@@ -213,7 +214,13 @@ export default async function TourPage({
                   >
                     Программа
                   </h2>
-                  <ProgramAccordion program={tour.program} />
+                  {tour.program_mode === "plan" && tour.program_text ? (
+                    <p className="text-[#64929E] leading-relaxed whitespace-pre-line">
+                      {tour.program_text}
+                    </p>
+                  ) : (
+                    <ProgramAccordion program={tour.program!} />
+                  )}
                 </div>
               )}
 
@@ -226,6 +233,64 @@ export default async function TourPage({
                     Проживание
                   </h2>
                   <p className="text-[#64929E]">{tour.accommodation}</p>
+                </div>
+              )}
+
+              {/* Гид / сопровождающий */}
+              {tour.guide?.name && (
+                <div>
+                  <h2
+                    className="text-3xl font-light text-[#134E6F] mb-4"
+                    style={{ fontFamily: "var(--font-cormorant)" }}
+                  >
+                    Гид
+                  </h2>
+                  <div className="flex items-start gap-4">
+                    {tour.guide.photoUrl && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={tour.guide.photoUrl.trim()}
+                        alt={tour.guide.name}
+                        loading="lazy"
+                        className="w-20 h-20 rounded-full object-cover flex-shrink-0"
+                      />
+                    )}
+                    <div>
+                      <div className="font-medium text-[#134E6F]">
+                        {tour.guide.name}
+                      </div>
+                      {tour.guide.description && (
+                        <p className="text-[#64929E] text-sm leading-relaxed mt-1 whitespace-pre-line">
+                          {tour.guide.description}
+                        </p>
+                      )}
+                      {tour.guide.link && (
+                        <a
+                          href={tour.guide.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[#1A97B5] text-sm hover:underline mt-2 inline-block"
+                        >
+                          Связаться →
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Для кого этот тур */}
+              {tour.audience && (
+                <div>
+                  <h2
+                    className="text-3xl font-light text-[#134E6F] mb-4"
+                    style={{ fontFamily: "var(--font-cormorant)" }}
+                  >
+                    Для кого этот тур
+                  </h2>
+                  <p className="text-[#64929E] leading-relaxed whitespace-pre-line">
+                    {tour.audience}
+                  </p>
                 </div>
               )}
             </div>

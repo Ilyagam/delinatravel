@@ -16,11 +16,21 @@ create table if not exists tours (
   what_included text[],
   what_excluded text[],
   program jsonb,
+  program_mode text default 'days',
+  program_text text,
+  guide jsonb,
+  audience text,
   accommodation text,
   image_urls text[],
   is_active boolean default true,
   created_at timestamptz default now()
 );
+
+-- Блоки страницы тура (для уже существующей БД — идемпотентный ALTER):
+alter table tours add column if not exists program_mode text default 'days';
+alter table tours add column if not exists program_text text;
+alter table tours add column if not exists guide jsonb;
+alter table tours add column if not exists audience text;
 
 -- 2. Заявки
 create table if not exists applications (
