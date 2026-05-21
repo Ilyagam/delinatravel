@@ -19,45 +19,43 @@ export default function AboutSection() {
           </h2>
           <div className="space-y-4 text-[#F0F7FA]/75 leading-relaxed">
             <p>
-              Delina Travel — казахстанское турагентство из Алматы, организующее
-              авторские групповые туры по Азии. Направления: Бали, Малайзия,
-              Таиланд, Куала-Лумпур. Группы до 12 человек, стоимость
-              от 730 000 тенге. В каждом туре участниц сопровождает организатор.
+              Delina Travel — travel brand из Астаны, создающий авторские
+              путешествия по Азии и Европе для тех, кто хочет не просто отдых,
+              а настоящие эмоции, новых людей и воспоминания, к которым хочется
+              возвращаться.
             </p>
             <p>
-              Мы создаём поездки для девушек 20-35 лет, где продумано всё:
-              проживание на частных виллах с бассейном или в отелях 4 звезды,
-              авторские маршруты по лучшим местам, перелёты, трансферы, завтраки
-              и медицинская страховка включены в стоимость.
+              Girls Trips, social trips, Europe experiences и авторские маршруты,
+              где уже продумано всё — от красивых локаций и комфортного
+              проживания до атмосферы, ради которой люди летят снова.
             </p>
             <p>
-              Форматы поездок: Girls Trip (только для девушек), молодёжный тур
-              (парни и девушки), девичник за границей, индивидуальный тур.
-              Большинство участниц приезжают одни и знакомятся в группе.
+              Большинство участников путешествуют одни — и находят друзей по
+              всему миру уже в первой поездке.
             </p>
             <p className="text-[#38BDF8] italic" style={{ fontFamily: "var(--font-cormorant)", fontSize: "1.2rem" }}>
-              Мир слишком большой, чтобы сидеть дома. Поехали смотреть его
-              вместе.
+              The world is too big to stay in one place 🩵
             </p>
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           {[
-            { number: "50+", label: "довольных путешественниц" },
-            { number: "10+", label: "направлений Азии" },
-            { number: "5", label: "форматов туров" },
-            { number: "100%", label: "сопровождение организатора" },
+            { icon: "✨", heading: "350+", label: "людей уже путешествовали с нами" },
+            { icon: "🌴", heading: "ASIA & EUROPE", label: "авторские маршруты по самым вдохновляющим направлениям" },
+            { icon: "🤍", heading: "Комфорт и поддержка", label: "остаёмся на связи и сопровождаем вас на каждом этапе поездки" },
+            { icon: "🥂", heading: "Новые знакомства", label: "travel-группы, где легко найти своих друзей" },
           ].map((stat) => (
             <div
-              key={stat.label}
+              key={stat.heading}
               className="bg-[#F0F7FA]/5 border border-[#F0F7FA]/10 rounded-2xl p-6"
             >
+              <div className="text-2xl mb-2">{stat.icon}</div>
               <div
-                className="text-4xl font-light text-[#38BDF8] mb-2"
+                className="text-2xl font-light text-[#38BDF8] mb-2 leading-tight"
                 style={{ fontFamily: "var(--font-cormorant)" }}
               >
-                {stat.number}
+                {stat.heading}
               </div>
               <div className="text-[#F0F7FA]/60 text-sm leading-tight">
                 {stat.label}

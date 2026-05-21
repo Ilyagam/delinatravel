@@ -39,6 +39,15 @@ export default function ContactSection({ tours }: ContactSectionProps) {
               <span className="text-xs opacity-60">+7 777 947 02 19</span>
             </a>
             <a
+              href="https://wa.me/77001401410"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-3 border border-[#134E6F]/20 rounded-full px-6 py-3 text-sm text-[#134E6F] hover:bg-[#134E6F] hover:text-[#F0F7FA] transition-colors w-fit"
+            >
+              <span>WhatsApp</span>
+              <span className="text-xs opacity-60">+7 700 140 1410</span>
+            </a>
+            <a
               href="https://t.me/dlnvltr"
               target="_blank"
               rel="noopener noreferrer"

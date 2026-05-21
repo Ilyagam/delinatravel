@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { sendApplicationToTelegram } from "@/lib/telegram";
 import { ApplicationFormData } from "@/types";
 
 export async function POST(req: NextRequest) {
@@ -13,30 +12,24 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Save to Supabase first to get the ID for notification buttons
-    let applicationId: string | undefined;
+    // Save to Supabase (admin-панель сайта читает заявки отсюда)
     if (
       process.env.NEXT_PUBLIC_SUPABASE_URL &&
       process.env.NEXT_PUBLIC_SUPABASE_URL !== "your_supabase_url"
     ) {
       const { createServiceClient } = await import("@/lib/supabase");
       const supabase = createServiceClient();
-      const { data: inserted } = await supabase
-        .from("applications")
-        .insert({
-          name: body.name,
-          phone: body.phone,
-          tour_id: body.tour_id || null,
-          tour_title: body.tour_title || null,
-          message: body.message || null,
-        })
-        .select("id")
-        .single();
-      applicationId = inserted?.id;
+      await supabase.from("applications").insert({
+        name: body.name,
+        phone: body.phone,
+        tour_id: body.tour_id || null,
+        tour_title: body.tour_title || null,
+        message: body.message || null,
+      });
     }
 
-    // REASON: дублируем заявку в Flick CRM (лид в тенант delina-travel). Не блокирует ответ
-    // пользователю — если CRM недоступна, заявка всё равно сохранена в Supabase + Telegram.
+    // REASON: основное назначение заявки — лид в Flick CRM (тенант delina-travel).
+    // Не блокирует ответ пользователю — если CRM недоступна, заявка всё равно сохранена в Supabase.
     if (process.env.CRM_WEBHOOK_URL) {
       try {
         const notes = [
@@ -63,9 +56,6 @@ export async function POST(req: NextRequest) {
         console.error("CRM webhook failed:", e);
       }
     }
-
-    // Send to Telegram with action buttons
-    await sendApplicationToTelegram({ ...body, application_id: applicationId });
 
     return NextResponse.json({ success: true });
   } catch (error) {

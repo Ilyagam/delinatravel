@@ -1,19 +1,23 @@
 const advantages = [
   {
-    title: "Маленькие группы",
-    description: "До 12 человек — каждая чувствует заботу и внимание",
+    icon: "✈️",
+    title: "Не нужно искать компанию",
+    description: "Многие участники летят solo и знакомятся уже в поездке",
   },
   {
-    title: "Продуманная программа",
-    description: "Маршрут, отели, трансферы — всё организовано заранее",
+    icon: "🌍",
+    title: "Маршруты без скучного туризма",
+    description: "Только красивые локации, живые города и настоящий travel vibe",
   },
   {
-    title: "Сопровождение",
-    description: "Организатор едет вместе с группой от и до",
+    icon: "🤍",
+    title: "Спокойно и комфортно",
+    description: "Мы берём организацию на себя, чтобы вы просто наслаждались поездкой",
   },
   {
-    title: "Необычные локации",
-    description: "Не туристические тропы, а места, где живёт настоящая жизнь",
+    icon: "📸",
+    title: "Путешествия, которые хочется сохранить",
+    description: "Новые эмоции, люди и moments, к которым хочется возвращаться",
   },
 ];
 
@@ -32,22 +36,17 @@ export default function AdvantagesSection() {
             className="text-4xl md:text-5xl font-light text-[#134E6F]"
             style={{ fontFamily: "var(--font-cormorant)" }}
           >
-            Преимущества
+            Почему путешествуют с нами
           </h2>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {advantages.map((item, i) => (
+          {advantages.map((item) => (
             <div
               key={item.title}
               className="border border-[#134E6F]/15 rounded-2xl p-6 hover:border-[#134E6F]/30 transition-colors"
             >
-              <div
-                className="text-5xl font-light text-[#134E6F]/25 mb-4"
-                style={{ fontFamily: "var(--font-cormorant)" }}
-              >
-                0{i + 1}
-              </div>
+              <div className="text-4xl mb-4">{item.icon}</div>
               <h3 className="font-medium text-[#134E6F] mb-2">{item.title}</h3>
               <p className="text-[#64929E] text-sm leading-relaxed">
                 {item.description}
