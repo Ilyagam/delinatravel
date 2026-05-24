@@ -317,7 +317,7 @@ export default async function TourPage({
 
                 <div className="mt-6 pt-6 border-t border-[#F0F7FA]/10 flex flex-col gap-3">
                   <a
-                    href="https://wa.me/77779470219"
+                    href="https://wa.me/message/27PZUZ2565XID1"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-[#F0F7FA]/60 text-sm hover:text-[#F0F7FA] transition-colors text-center"

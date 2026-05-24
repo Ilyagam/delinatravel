@@ -18,7 +18,7 @@ export default function Footer() {
 
           <div className="flex flex-wrap gap-4 text-xs">
             <a
-              href="https://wa.me/77779470219"
+              href="https://wa.me/message/27PZUZ2565XID1"
               target="_blank"
               rel="noopener noreferrer"
               className="text-[#F0F7FA]/40 hover:text-[#F0F7FA]/70 transition-colors"

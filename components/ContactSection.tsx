@@ -30,7 +30,7 @@ export default function ContactSection({ tours }: ContactSectionProps) {
           {/* Contact buttons */}
           <div className="flex flex-col gap-3">
             <a
-              href="https://wa.me/77779470219"
+              href="https://wa.me/message/27PZUZ2565XID1"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-3 border border-[#134E6F]/20 rounded-full px-6 py-3 text-sm text-[#134E6F] hover:bg-[#134E6F] hover:text-[#F0F7FA] transition-colors w-fit"

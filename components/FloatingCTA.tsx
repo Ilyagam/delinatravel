@@ -25,7 +25,7 @@ export default function FloatingCTA() {
     >
       {/* WhatsApp */}
       <a
-        href="https://wa.me/77779470219"
+        href="https://wa.me/message/27PZUZ2565XID1"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Написать в WhatsApp"

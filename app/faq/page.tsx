@@ -197,7 +197,7 @@ export default function FAQPage() {
               Собрали ответы на самые популярные вопросы о наших турах.
               Не нашли свой вопрос?{" "}
               <a
-                href="https://wa.me/77779470219"
+                href="https://wa.me/message/27PZUZ2565XID1"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-[#1A97B5] hover:underline"
@@ -252,7 +252,7 @@ export default function FAQPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <a
-                href="https://wa.me/77779470219"
+                href="https://wa.me/message/27PZUZ2565XID1"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 bg-white text-[#134E6F] px-6 py-3 rounded-full text-sm font-medium hover:bg-white/90 transition-colors"

@@ -80,7 +80,7 @@ export default function PrivacyPage() {
               </ul>
               <p className="mt-2">
                 Для этого свяжитесь с нами: WhatsApp{" "}
-                <a href="https://wa.me/77779470219" className="text-[#1A97B5] underline">
+                <a href="https://wa.me/message/27PZUZ2565XID1" className="text-[#1A97B5] underline">
                   +7 777 947 02 19
                 </a>
               </p>

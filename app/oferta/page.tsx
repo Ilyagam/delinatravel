@@ -282,7 +282,7 @@ export default function OfertaPage() {
               <p>По всем вопросам вы можете связаться с нами:</p>
               <p>
                 WhatsApp:{" "}
-                <a href="https://wa.me/77779470219" className="text-[#1A97B5] underline">
+                <a href="https://wa.me/message/27PZUZ2565XID1" className="text-[#1A97B5] underline">
                   +7 777 947 02 19
                 </a>
                 <br />
