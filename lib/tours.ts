@@ -68,6 +68,36 @@ export const SEED_TOURS: Tour[] = [
   },
 ];
 
+// REASON: туры из CRM хранят загруженные фото как ОТНОСИТЕЛЬНЫЕ пути CRM (/api/public/avatar/...),
+// т.к. CRM отдаёт их со своего домена. На сайте такой путь резолвится в delinatravel.kz → 404.
+// Поэтому при чтении тура префиксуем /api/... абсолютным URL CRM. Site-local пути (/photos/...)
+// и уже-абсолютные URL (Supabase storage и пр.) не трогаем.
+const CRM_PUBLIC_BASE = "https://crm.flick-soft.tech";
+
+function absMediaUrl(u: string | null | undefined): string | undefined {
+  const s = (u ?? "").trim();
+  if (!s) return undefined;
+  if (/^https?:\/\//i.test(s)) return s; // уже абсолютный
+  if (s.startsWith("/api/")) return `${CRM_PUBLIC_BASE}${s}`; // относительный CRM-файл → абсолютный
+  return s; // прочие относительные (site-local, напр. /photos/...) — как есть
+}
+
+// REASON: нормализуем все медиа-URL тура (галерея, фото гида, фото дней программы) к абсолютным.
+function normalizeTourMedia(t: Tour): Tour {
+  return {
+    ...t,
+    image_urls:
+      t.image_urls
+        ?.map((u) => absMediaUrl(u))
+        .filter((u): u is string => !!u) ?? null,
+    guide: t.guide ? { ...t.guide, photoUrl: absMediaUrl(t.guide.photoUrl) } : t.guide,
+    program:
+      t.program?.map((d) =>
+        d.imageUrl ? { ...d, imageUrl: absMediaUrl(d.imageUrl) } : d,
+      ) ?? t.program,
+  };
+}
+
 export async function getActiveTours(): Promise<Tour[]> {
   if (!isConfigured() || !supabase) {
     return SEED_TOURS;
@@ -80,11 +110,7 @@ export async function getActiveTours(): Promise<Tour[]> {
     .order("created_at", { ascending: false });
 
   if (error) return SEED_TOURS;
-  // REASON: URL из БД могут содержать пробелы — trim предотвращает 400 от Next.js Image
-  return (data as Tour[]).map((t) => ({
-    ...t,
-    image_urls: t.image_urls?.map((u) => u.trim()) ?? null,
-  }));
+  return (data as Tour[]).map(normalizeTourMedia);
 }
 
 export async function getTourBySlug(slug: string): Promise<Tour | null> {
@@ -99,10 +125,5 @@ export async function getTourBySlug(slug: string): Promise<Tour | null> {
     .single();
 
   if (error) return null;
-  const tour = data as Tour;
-  // REASON: URL из БД могут содержать пробелы — trim предотвращает 400 от Next.js Image
-  if (tour.image_urls) {
-    tour.image_urls = tour.image_urls.map((u) => u.trim());
-  }
-  return tour;
+  return normalizeTourMedia(data as Tour);
 }
